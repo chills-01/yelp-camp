@@ -42,7 +42,7 @@ const validateCampground = (req, res, next) => {
 }
 
 const validateReview = (req, res, next) => {
-    const {error} = reviewSchema.validate(req.body);
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',');
         throw new ExpressError(msg, 400);
@@ -50,10 +50,6 @@ const validateReview = (req, res, next) => {
         next();
     }
 }
-
-// app.get('/', (req, res) => {
-//     res.render('home')
-// });
 
 // render form for new campground
 app.get('/campgrounds/new', (req, res) => {
@@ -103,14 +99,22 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
 
 // post a new review to a campground
 app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
-    // res.send('YOU MADE IT!');
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     campground.reviews.push(review);
     await review.save();
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`)
-}))
+}));
+
+// deleting a review
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); //  delete reference
+    await Review.findByIdAndDelete(reviewId); // delete review
+    res.redirect(`/campgrounds/${id}`)
+
+}));
 
 // if the route does not exist
 app.all('*', (req, res, next) => {
