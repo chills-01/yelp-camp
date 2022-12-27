@@ -9,18 +9,17 @@ const users = require('../controllers/users')
 
 const router = express.Router();
 
-router.get('/register', users.renderRegister);
+router.route('/register')
+    .get(users.renderRegister)
+    .post(catchAsync(users.register));
 
-router.post('/register', catchAsync(users.register));
-
-
-router.get('/login', users.renderLogin);
-
-// keep session info: true is not secure, pass returnTo as query string in future
-// https://www.youtube.com/watch?v=i0q8YCCffoM
-router.post('/login', passport.authenticate('local',
-    { failureFlash: true, failureRedirect: '/login', keepSessionInfo: true }),
-    users.login);
+router.route('/login')
+    .get(users.renderLogin)
+    // keep session info: true is not secure, pass returnTo as query string in future
+    // https://www.youtube.com/watch?v=i0q8YCCffoM
+    .post(passport.authenticate('local',
+        { failureFlash: true, failureRedirect: '/login', keepSessionInfo: true }),
+        users.login);
 
 router.get('/logout', users.logout);
 
