@@ -47,10 +47,13 @@ module.exports.renderEditForm = async (req, res) => {
         res.render('campgrounds/edit', { campground });
     }
 }
-
+// could do the update in one step
 module.exports.updateCampground = async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    const imgs = req.files.map(f => ({url: f.path, filename: f.filename}));
+    campground.images.push(...imgs); // add images to current list
+    await campground.save();
     req.flash('success', 'Sucessfully updated campground.');
     res.redirect(`/campgrounds/${campground._id}`)
 
