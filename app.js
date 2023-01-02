@@ -78,6 +78,11 @@ app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes)
 app.use('/campgrounds/:id/reviews', reviewRoutes)
 
+// home page
+app.get('/', (req, res) => {
+    res.render('home');
+})
+
 // if the route does not exist
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
