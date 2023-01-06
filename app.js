@@ -6,24 +6,27 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
-const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const User = require('./models/user');
 const helmet = require('helmet');
-
+const MongoStore = require('connect-mongo');
 const mongoSanitize = require('express-mongo-sanitize');
 
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews')
-const userRoutes = require('./routes/users')
+const userRoutes = require('./routes/users');
+const User = require('./models/user');
+const ExpressError = require('./utils/ExpressError');
+
+
 
 mongoose.set('strictQuery', false) // make mongoose stop crying
 
-
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+// const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -48,9 +51,24 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+
+const secret = process.env.SECRET || 'thisisnotagoodsecret!';
+// configure mongo to store session
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60, // lazy update cookies
+    crypto: {
+        secret
+    }
+});
+store.on('error', (e) => {
+    console.log('SESSION STORE ERROR', e);
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: 'thisshouldbeabettersecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
