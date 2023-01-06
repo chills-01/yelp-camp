@@ -20,6 +20,9 @@ const userRoutes = require('./routes/users');
 const User = require('./models/user');
 const ExpressError = require('./utils/ExpressError');
 
+// port from render
+const port = process.env.PORT || 3000;
+
 
 
 mongoose.set('strictQuery', false) // make mongoose stop crying
@@ -169,6 +172,6 @@ app.use((err, req, res, next) => {
     // res.send('Oh boy, something went wrong!')
 })
 
-app.listen(3000, () => {
-    console.log('Serving on port 3000')
+app.listen(port, () => {
+    console.log(`Serving on port ${port}`);
 });
