@@ -30,7 +30,12 @@ const seedDB = async () => {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
 
+        const start = new Date(2020, 0, 1);
+        const end = new Date();
+        const dateCreated = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+
         const camp = new Campground({
+            dateCreated,
             author: '63a96181c7bc4114deb70fca',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             geometry: {
@@ -39,12 +44,12 @@ const seedDB = async () => {
             },
             title: `${sample(descriptors)} ${sample(places)}`,
             images: [{
-                url: 'https://res.cloudinary.com/dx2dsisqo/image/upload/v1672127881/YelpCamp/sx5w6susgme8npbmxypz.jpg',
+                url: 'https://res.cloudinary.com/dx2dsisqo/image/upload/v1672317272/YelpCamp/attsav92l8se5m4g6sro.jpg',
                 filename: 'YelpCamp/sx5w6susgme8npbmxypz'
             },
             {
                 url: 'https://res.cloudinary.com/dx2dsisqo/image/upload/v1672127881/YelpCamp/fi5s7f20zska0npwa6ka.webp',
-                filename: 'YelpCamp/fi5s7f20zska0npwa6ka'
+                filename: 'YelpCamp/attsav92l8se5m4g6sro'
 
             }],
             description: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Incidunt delectus sapiente, molestiae tempora labore sequi consectetur inventore? Dolorem illo quos, ut, doloribus aut molestiae enim quia ex corporis architecto cupiditate? Consectetur fugit maxime ea officiis voluptatibus numquam velit eos ad architecto quis dolores quam et cumque sequi laudantium, amet reiciendis. Vel quae illum quaerat laborum quia rem eius explicabo fugit?',

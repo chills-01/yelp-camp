@@ -39,6 +39,7 @@
           </li>
           <li class="list-group-item">$<%=campground.price %> per night </li>
         </ul>
+        <!-- show edit/delete only if owner -->
         <% if (currentUser && campground.author.equals(currentUser._id)) {%>
           <div class="card-body">
             <a class="card-link btn btn-info" href="/campgrounds/<%=campground._id %>/edit">Edit</a>
@@ -48,19 +49,16 @@
           </div>
           <% } %>
             <div class="card-footer text-muted">
-              2 days ago
+              <%= campground.timeSinceCreation %>
             </div>
       </div>
     </div>
     <div class="col-6">
     <div id="map" class="mb-3"></div>
-      <% if (currentUser) {%>
+    <!-- can't leave review on own camp site -->
+      <% if (currentUser && !campground.author.equals(currentUser._id)) {%>
         <h2>Leave a Review</h2>
         <form class="mb-3 validated-form" action="/campgrounds/<%=campground._id%>/reviews" method="POST" novalidate>
-          <!-- <div class="mb-3">
-            <label class="form-label" for="rating">Rating</label>
-            <input class="form-range" type="range" min="1" max="5" name="review[rating][rating]" id="rating">
-          </div> -->
           <fieldset class="starability-basic mb-3">
             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
             <input type="radio" id="first-rate1" name="review[rating]" value="1" />

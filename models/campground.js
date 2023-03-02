@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Review = require('./review');
+const dateText = require('../utils/dateText');
 
 const ImageSchema = new Schema({
     url: String,
@@ -13,6 +14,10 @@ ImageSchema.virtual('thumbnail').get(function() {
 
 const opts = {toJSON: {virtuals: true}};
 const CampgroundSchema = new Schema({
+    dateCreated: {
+        type: Date,
+        default: new Date(),
+    },
     title: String,
     images: [ImageSchema],
     geometry: {
@@ -43,6 +48,29 @@ const CampgroundSchema = new Schema({
 
 CampgroundSchema.virtual('properties.popupMarkup').get(function() {
     return `<a href="/campgrounds/${this._id}">${this.title}</a>`
+
+});
+
+
+// used for the XX days ago function on show page
+CampgroundSchema.virtual('timeSinceCreation').get(function() {
+    const start = new Date();
+    const end = this.dateCreated;
+    // check separate year
+    if (start.getFullYear() !== end.getFullYear()) {
+        return `Listed ${dateText(start.getFullYear(), end.getFullYear(), 'year')} ago`;
+    }
+    // check separate month
+    else if (start.getMonth() !== end.getMonth()) {
+        return `Listed ${dateText(start.getMonth(), end.getMonth(), 'month')} ago`;
+    }
+    // check separate day
+    else if (start.getDate() !== end.getDate()) {
+        return `Listed ${dateText(start.getDate(), end.getDate(), 'day')} ago`;
+    }
+    else {
+        return 'Listed Today';
+    }
 
 })
 

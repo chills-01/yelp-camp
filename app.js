@@ -83,7 +83,6 @@ app.use(session(sessionConfig));
 app.use(flash());
 
 // security policy
-
 const scriptSrcUrls = [
   "https://stackpath.bootstrapcdn.com/",
   "https://api.tiles.mapbox.com/",
