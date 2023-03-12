@@ -6,10 +6,19 @@ const mapboxToken = process.env.MAPBOX_TOKEN;
 
 const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
+const itemsPerPage = 12;
 
 module.exports.index = async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds });
+    const currentPage = Number(req.query.page) || 1;
+    const numProducts = await Campground.count();
+    const numPages = Math.ceil(numProducts / itemsPerPage);
+
+    // return data for mapbox (not really sure of a good way of loading all this data)
+    const geoCampgrounds = await Campground.find({}).select('geometry dateCreated');
+
+    // return data for pages
+    const campgrounds = await Campground.find({}).skip((currentPage - 1) * itemsPerPage).limit(itemsPerPage)
+    res.render('campgrounds/index', { campgrounds, geoCampgrounds, currentPage, numPages });
 };
 
 module.exports.renderNewForm = (req, res) => {

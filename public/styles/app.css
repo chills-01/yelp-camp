@@ -7,3 +7,15 @@
     width: 100%;
     height: 300px;
 }
+
+/* on index page */
+.card:hover {
+    background-color: rgba(210, 210, 210, 0.3);
+    transition: background-color 200ms linear;
+    cursor: pointer;
+}
+
+.card-link {
+    text-decoration: none;
+}
+/* ************ */
