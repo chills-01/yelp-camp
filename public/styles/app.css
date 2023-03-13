@@ -9,7 +9,7 @@
 }
 
 /* on index page */
-.card:hover {
+.index-card:hover {
     background-color: rgba(210, 210, 210, 0.3);
     transition: background-color 200ms linear;
     cursor: pointer;

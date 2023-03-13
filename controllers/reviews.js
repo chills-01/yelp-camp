@@ -6,6 +6,10 @@ module.exports.createReview = async (req, res) => {
     const review = new Review(req.body.review);
     review.author = req.user._id;
     campground.reviews.push(review);
+
+    // update average rating
+    campground.averageRating = updateAverageRating(campground.averageRating, campground.reviews.length, review.rating);
+;
     await review.save();
     await campground.save();
     req.flash('success', 'Created new review');
@@ -20,3 +24,7 @@ module.exports.deleteReview = async (req, res) => {
     res.redirect(`/campgrounds/${id}`)
 
 };
+
+function updateAverageRating(oldAverage, newLength, newRating) {
+    return (oldAverage * (newLength - 1) + newRating) / newLength;
+}
