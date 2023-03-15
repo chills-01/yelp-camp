@@ -1,6 +1,21 @@
 <% layout('./layouts/boilerplate') %>
     <div id="cluster-map"></div>
-    <h1>All Campgrounds</h1>
+
+<div class="container">
+    <div class="row justify-content-end">
+        <div class="col-4">
+            <form action="/campgrounds" method="GET" id="sortingForm">
+                <select class="form-select form-select-sm my-3" aria-label=".form-select-sm example" onchange="onChange()" name="sort">
+                    <option selected value="highRate">Highest Rated (default)</option>
+                    <option value="lowPrice">Lowest price</option>
+                    <option value="highPrice">Highest price</option>
+                    <option value="notImp" disabled>Nearest to me</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+</div>
 
 <!-- JANKY WAY TO MAKE A GRID -->
 <div class="container text-start mb-3">
@@ -66,3 +81,4 @@
 </script>
 
 <script src="/js/clusterMap.js"></script>
+<script src="js/onChange.js"></script>

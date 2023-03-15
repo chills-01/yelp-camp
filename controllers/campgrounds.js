@@ -8,8 +8,14 @@ const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 const itemsPerPage = 12;
 
+// implementing sorting into 
+// highest rated
+// lowest price
+// nearest to me?
+
 module.exports.index = async (req, res) => {
-    const currentPage = Number(req.query.page) || 1;
+    const currentPage = Number(req.query.page) || 1
+    console.log(req.query.value);
     const numProducts = await Campground.count();
     const numPages = Math.ceil(numProducts / itemsPerPage);
 
@@ -17,7 +23,10 @@ module.exports.index = async (req, res) => {
     const geoCampgrounds = await Campground.find({}).select('geometry dateCreated');
 
     // return data for pages
-    const campgrounds = await Campground.find({}).skip((currentPage - 1) * itemsPerPage).limit(itemsPerPage)
+    const campgrounds = await Campground.find({})
+    .skip((currentPage - 1) * itemsPerPage)
+    .limit(itemsPerPage)
+    .sort([['averageRating', -1]])
     res.render('campgrounds/index', { campgrounds, geoCampgrounds, currentPage, numPages });
 };
 
@@ -37,7 +46,6 @@ module.exports.createCampground = async (req, res, next) => {
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
     await campground.save();
-    console.log(campground);
     req.flash('success', 'Successfully made a new campground');
     res.redirect(`/campgrounds/${campground._id}`)
 }
