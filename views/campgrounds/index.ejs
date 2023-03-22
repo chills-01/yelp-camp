@@ -5,11 +5,11 @@
     <div class="row justify-content-end">
         <div class="col-4">
             <form action="/campgrounds" method="GET" id="sortingForm">
-                <select class="form-select form-select-sm my-3" aria-label=".form-select-sm example" onchange="onChange()" name="sort">
-                    <option selected value="highRate">Highest Rated (default)</option>
+                <select class="form-select form-select-sm my-3" aria-label=".form-select-sm example" name="sortBy" id="sortBy">
+                    <option default value="highRate">Highest Rated (default)</option>
                     <option value="lowPrice">Lowest price</option>
                     <option value="highPrice">Highest price</option>
-                    <option value="notImp" disabled>Nearest to me</option>
+                    <option value="nearest" disabled>Nearest to me</option>
                 </select>
             </form>
         </div>
@@ -81,4 +81,5 @@
 </script>
 
 <script src="/js/clusterMap.js"></script>
-<script src="js/onChange.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/index.js"></script>
