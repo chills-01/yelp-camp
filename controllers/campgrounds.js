@@ -8,57 +8,48 @@ const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 const itemsPerPage = 12;
 
+const sortByTranslate = {
+    highRate: ["averageRating", -1],
+    highPrice: ["price", -1],
+    lowPrice: ["price", 1],
+};
+
+// retrieves sorted page of campgrounds
+async function retrieveCampgrounds(params) {
+    const { sortBy, currentPage } = params;
+    const campgrounds = await Campground.find({})
+        .sort([sortByTranslate[sortBy]])
+        .skip((currentPage - 1) * itemsPerPage)
+        .limit(itemsPerPage);
+    console.log(campgrounds);
+    return campgrounds;
+}
+
 // implementing sorting into
 // highest rated
 // lowest price
 // nearest to me?
 
 module.exports.index = async (req, res) => {
-    const currentPage = Number(req.query.page) || 1;
-    const sortBy = req.query.sortBy;
     const numProducts = await Campground.count();
-    const numPages = Math.ceil(numProducts / itemsPerPage);
+    const params = {
+        currentPage: Number(req.query.page) || 1,
+        sortBy: req.query.sortBy || "highRate",
+        numPages: Math.ceil(numProducts / itemsPerPage),
+    };
 
     // return data for mapbox (not really sure of a good way of loading all this data)
     const geoCampgrounds = await Campground.find({}).select(
         "geometry dateCreated"
     );
 
-    // return data for pages
-    if (sortBy === "lowPrice") {
-        const campgrounds = await Campground.find({})
-            .skip((currentPage - 1) * itemsPerPage)
-            .limit(itemsPerPage)
-            .sort([["price", 1]]);
-        res.render("campgrounds/index", {
-            campgrounds,
-            geoCampgrounds,
-            currentPage,
-            numPages,
-        });
-    } else if (sortBy === "highPrice") {
-        const campgrounds = await Campground.find({})
-            .skip((currentPage - 1) * itemsPerPage)
-            .limit(itemsPerPage)
-            .sort([["price", -1]]);
-        res.render("campgrounds/index", {
-            campgrounds,
-            geoCampgrounds,
-            currentPage,
-            numPages,
-        });
-    } else {
-        const campgrounds = await Campground.find({})
-            .skip((currentPage - 1) * itemsPerPage)
-            .limit(itemsPerPage)
-            .sort([["averageRating", -1]]);
-        res.render("campgrounds/index", {
-            campgrounds,
-            geoCampgrounds,
-            currentPage,
-            numPages,
-        });
-    }
+    const campgrounds = await retrieveCampgrounds(params);
+    res.render("campgrounds/index", {
+        campgrounds,
+        geoCampgrounds,
+        ...params,
+    });
+
 };
 
 module.exports.renderNewForm = (req, res) => {
