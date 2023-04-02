@@ -21,7 +21,6 @@ async function retrieveCampgrounds(params) {
         .sort([sortByTranslate[sortBy]])
         .skip((currentPage - 1) * itemsPerPage)
         .limit(itemsPerPage);
-    console.log(campgrounds);
     return campgrounds;
 }
 

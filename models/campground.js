@@ -45,12 +45,12 @@ const CampgroundSchema = new Schema(
                 ref: "Review",
             },
         ],
-        averageRating: [
-            {
+        averageRating: {
                 type: Number,
                 default: 0,
+                minimum: 0,
+                maximum: 5,
             },
-        ]
     },
     opts
 );
