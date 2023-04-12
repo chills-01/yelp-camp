@@ -35,6 +35,7 @@ module.exports.deleteReview = async (req, res) => {
         -review.rating, // decrease rating by review.rating
         campground.reviews.length - 1 
     );
+    
     campground.save();
 
     req.flash("success", "Successfully deleted review");
